@@ -4,18 +4,20 @@
   <meta charset="utf-8">
   
   
-  <title>第一篇文章 | ruofan的个人博客</title>
+  <title>踩坑记录（1） | ruofan的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="这是第一篇文章">
+  <meta name="description" content="做数据库课设时，我试图修改一个外键的删除规则和更新规则为CASCADE。 SQL语句执行成功了，然而刷新后它的属性又都变回了RESTRICT。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第一篇文章">
-<meta property="og:url" content="https://ruofancooh.github.io/2023/05/25/%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/index.html">
+<meta property="og:title" content="踩坑记录（1）">
+<meta property="og:url" content="https://ruofancooh.github.io/2023/05/26/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%EF%BC%881%EF%BC%89/index.html">
 <meta property="og:site_name" content="ruofan的个人博客">
-<meta property="og:description" content="这是第一篇文章">
+<meta property="og:description" content="做数据库课设时，我试图修改一个外键的删除规则和更新规则为CASCADE。 SQL语句执行成功了，然而刷新后它的属性又都变回了RESTRICT。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-05-25T06:42:37.000Z">
-<meta property="article:modified_time" content="2023-05-25T06:46:57.156Z">
+<meta property="article:published_time" content="2023-05-26T13:31:47.000Z">
+<meta property="article:modified_time" content="2023-05-26T13:34:01.500Z">
 <meta property="article:author" content="ruofan">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="踩坑记录">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="ruofan的个人博客" type="application/atom+xml">
@@ -75,10 +77,10 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-第一篇文章" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-踩坑记录（1）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2023/05/25/%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" class="article-date">
-  <time class="dt-published" datetime="2023-05-25T06:42:37.000Z" itemprop="datePublished">2023-05-25</time>
+    <a href="/2023/05/26/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%EF%BC%881%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2023-05-26T13:31:47.000Z" itemprop="datePublished">2023-05-26</time>
 </a>
     
   </div>
@@ -89,7 +91,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      第一篇文章
+      踩坑记录（1）
     </h1>
   
 
@@ -97,30 +99,42 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>这是第一篇文章</p>
+        <p>做数据库课设时，我试图修改一个外键的删除规则和更新规则为<code>CASCADE</code>。</p>
+<p>SQL语句执行成功了，然而刷新后它的属性又都变回了<code>RESTRICT</code>。</p>
+<span id="more"></span>
+<p>我使用的是 MySQL + DBeaver。</p>
+<p>建立外键时，选择的删除属性和更新属性是无动作（默认）。</p>
+<p>建立后，MySQL把它们设为了<code>RESTRICT</code>。</p>
+<p>由于一些麻烦的原因，我想把它们改成<code>CASCADE</code>，于是出现了上面的情况。</p>
+<p>DBeaver给出的SQL语句是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> dbkeshe.student <span class="keyword">DROP</span> <span class="keyword">FOREIGN</span> KEY student_FK;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> dbkeshe.student <span class="keyword">ADD</span> <span class="keyword">CONSTRAINT</span> student_FK <span class="keyword">FOREIGN</span> KEY (CLASS_NO) <span class="keyword">REFERENCES</span> dbkeshe.class(CLASS_NO) <span class="keyword">ON</span> <span class="keyword">DELETE</span> CASCADE <span class="keyword">ON</span> <span class="keyword">UPDATE</span> CASCADE;</span><br></pre></td></tr></table></figure>
+<p>我以为是DBeaver的问题，又在命令行里执行了一遍，还是会变回<code>RESTRICT</code>。</p>
+<p>网上搜了一下，没有找到类似的情况发生过。</p>
+<p>我又尝试把所有的外键约束删了，然后再重建，还是不行。</p>
+<p>把所有的外键约束和索引删了，然后再重建，还是不行。</p>
+<p>到最后还是没有找到原因。</p>
+<p>我只好重建一个数据库，把旧数据库dump出来的SQL语句外键约束后面全部加上<code>ON DELETE CASCADE ON UPDATE CASCADE</code>。这回成功了。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://ruofancooh.github.io/2023/05/25/%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" data-id="cli4lurem0003rcg59fe346cd" data-title="第一篇文章" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://ruofancooh.github.io/2023/05/26/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%EF%BC%881%EF%BC%89/" data-id="cli4lureo0004rcg55x3idvsb" data-title="踩坑记录（1）" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" rel="tag">踩坑记录</a></li></ul>
+
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2023/05/26/JSON/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">前一篇</strong>
-      <div class="article-nav-title">
-        
-          JSON
-        
-      </div>
-    </a>
   
+    <a href="/2023/05/26/JSON/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">JSON</div>
+    </a>
   
 </nav>
 
