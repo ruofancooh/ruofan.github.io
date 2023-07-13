@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /blog/
+Disallow: /blog/css/
+Disallow: /blog/images/
+Disallow: /blog/js/
+
+
+Sitemap: https://ruofancooh.github.io/blog/sitemap.xml
