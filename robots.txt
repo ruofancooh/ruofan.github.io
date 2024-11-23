@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /blog/css/
+Disallow: /blog/js/
